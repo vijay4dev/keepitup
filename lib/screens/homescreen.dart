@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
+import 'package:keepitup/screens/pdfviewscreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PdfListScreen extends StatefulWidget {
@@ -51,9 +52,9 @@ class _PdfListScreenState extends State<PdfListScreen> {
   Future<List<File>> scanAllPdfs() async {
     List<File> pdfFiles = [];
 
-    final downloadsPath =
-        await ExternalPath.getExternalStoragePublicDirectory(
-            ExternalPath.DIRECTORY_DOWNLOAD);
+    final downloadsPath = await ExternalPath.getExternalStoragePublicDirectory(
+      ExternalPath.DIRECTORY_DOWNLOAD,
+    );
 
     final dir = Directory(downloadsPath);
     if (!dir.existsSync()) return pdfFiles;
@@ -74,25 +75,32 @@ class _PdfListScreenState extends State<PdfListScreen> {
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : permissionDenied
-              ? const Center(
-                  child: Text(
-                    "Storage permission required.\nPlease allow ALL FILES access.",
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              : pdfs.isEmpty
-                  ? const Center(child: Text("No PDFs Found"))
-                  : ListView.builder(
-                      itemCount: pdfs.length,
-                      itemBuilder: (context, index) {
-                        final file = pdfs[index];
-                        return ListTile(
-                          leading: const Icon(Icons.picture_as_pdf,
-                              color: Colors.red),
-                          title: Text(file.path.split('/').last),
-                        );
-                      },
-                    ),
+          ? const Center(
+              child: Text(
+                "Storage permission required.\nPlease allow ALL FILES access.",
+                textAlign: TextAlign.center,
+              ),
+            )
+          : pdfs.isEmpty
+          ? const Center(child: Text("No PDFs Found"))
+          : ListView.builder(
+              itemCount: pdfs.length,
+              itemBuilder: (context, index) {
+                final file = pdfs[index];
+                return ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PdfDetailScreen(file: file),
+                      ),
+                    );
+                  },
+                  leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                  title: Text(file.path.split('/').last),
+                );
+              },
+            ),
     );
   }
 }

@@ -10,9 +10,41 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: PdfListScreen(),
+
+      theme: ThemeData(
+        useMaterial3: true,
+
+        // 🌤️ Overall app background
+        scaffoldBackgroundColor: Colors.white,
+
+        // 🎨 Color scheme (NO PURPLE)
+        colorScheme: const ColorScheme.light(
+          primary: Colors.blue,      // buttons, highlights
+          secondary: Colors.blue,
+          surface: Colors.white,
+          background: Colors.white,
+          onPrimary: Colors.white,
+          onSurface: Colors.black,
+        ),
+
+        // 🧭 AppBar style
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+
+      ),
+
+      home: const PdfListScreen(),
     );
   }
 }
