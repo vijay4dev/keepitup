@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:pdf_render/pdf_render.dart';
+import 'package:pdfx/pdfx.dart';
 
 class PdfThumbnail extends StatefulWidget {
   final File file;
@@ -22,20 +22,19 @@ class _PdfThumbnailState extends State<PdfThumbnail> {
 
   Future<void> _loadThumbnail() async {
     try {
-      final doc = await PdfDocument.openFile(widget.file.path);
-      final page = await doc.getPage(1);
+      final document = await PdfDocument.openFile(widget.file.path);
+
+      final page = await document.getPage(1);
 
       final pageImage = await page.render(
-        width: 200,
-        height: 280,
-        fullWidth: 200,
-        fullHeight: 280,
+        width: 80,
+        height: 80,
+        format: PdfPageImageFormat.png,
+        backgroundColor: '#FFFFFF',
       );
 
-      // 🔥 THIS IS THE KEY LINE
-      await pageImage.createImageIfNotAvailable();
-
-      doc.dispose();
+      await page.close();
+      await document.close();
 
       if (!mounted) return;
 
@@ -44,7 +43,7 @@ class _PdfThumbnailState extends State<PdfThumbnail> {
         _loading = false;
       });
     } catch (e) {
-      debugPrint("PDF thumbnail error: $e");
+      debugPrint("PDFX thumbnail error: $e");
       if (!mounted) return;
       setState(() => _loading = false);
     }
@@ -52,15 +51,16 @@ class _PdfThumbnailState extends State<PdfThumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading || _pageImage?.imageIfAvailable == null) {
+    if (_loading || _pageImage == null) {
       return _placeholder();
     }
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
-      child: RawImage(
-        image: _pageImage!.imageIfAvailable,
+      child: Image.memory(
+        _pageImage!.bytes,
         fit: BoxFit.cover,
+        width: 80,
       ),
     );
   }
