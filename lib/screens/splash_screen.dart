@@ -1,10 +1,11 @@
-import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:keepitup/screens/homescreen.dart';
+import 'package:keepitup/services/pdf_scanne_services.dart';
+import 'package:keepitup/services/permission_service.dart';
 
 class SplashScreen extends StatefulWidget {
-  final VoidCallback onComplete;
-
-  const SplashScreen({super.key, required this.onComplete});
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -21,7 +22,11 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+    _setupAnimations();
+    _startFlow();
+  }
 
+  void _setupAnimations() {
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
@@ -44,11 +49,39 @@ class _SplashScreenState extends State<SplashScreen>
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     );
+  }
 
-    _controller.forward();
+  Future<void> _startFlow() async {
+    // animation + init parallel
+    await Future.wait([
+      _controller.forward(),
+      _initApp(),
+    ]);
+  }
 
-    /// Auto continue (same as Framer Motion onAnimationComplete)
-    Timer(const Duration(milliseconds: 2200), widget.onComplete);
+  Future<void> _initApp() async {
+    final granted = await PermissionService.requestStorage();
+
+    if (!granted) {
+      _goHome([], true);
+      return;
+    }
+
+    final pdfs = await PdfScanService.scanAllPdfs();
+    _goHome(pdfs, false);
+  }
+
+  void _goHome(List<File> files, bool permissionDenied) {
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PdfListScreen(
+          initialPdfs: files,
+          permissionDenied: permissionDenied,
+        ),
+      ),
+    );
   }
 
   @override
@@ -64,8 +97,7 @@ class _SplashScreenState extends State<SplashScreen>
         opacity: _fadeAnimation,
         child: Stack(
           fit: StackFit.expand,
-          children: [ 
-            /// Gradient background
+          children: [
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -74,31 +106,17 @@ class _SplashScreenState extends State<SplashScreen>
                   colors: [
                     Color(0xffEFF6FF),
                     Color(0xffF3E8FF),
-                    Color(0xffFCE7F3),
+                    Color.fromARGB(255, 252, 239, 246),
                   ],
                 ),
               ),
             ),
-
-            /// Soft blurred background image
-            Positioned.fill(
-              child: Opacity(
-                opacity: 0.3,
-                child: Image.network(
-                  "https://images.unsplash.com/photo-1760442903597-6aeb6f23212f",
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-
-            /// Content
             Center(
               child: ScaleTransition(
                 scale: _scaleAnimation,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    /// Logo
                     RotationTransition(
                       turns: _rotationAnimation,
                       child: Container(
@@ -107,20 +125,11 @@ class _SplashScreenState extends State<SplashScreen>
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(28),
                           gradient: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
                             colors: [
                               Color(0xff3B82F6),
                               Color(0xff7C3AED),
                             ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.blue.withOpacity(0.3),
-                              blurRadius: 30,
-                              offset: const Offset(0, 12),
-                            ),
-                          ],
                         ),
                         child: const Icon(
                           Icons.description_rounded,
@@ -129,20 +138,16 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 24),
-
-                    /// Text
                     SlideTransition(
                       position: _slideAnimation,
-                      child: Column(
-                        children: const [
+                      child: const Column(
+                        children: [
                           Text(
                             "Keep It",
                             style: TextStyle(
                               fontSize: 36,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xff1D1D1F),
                             ),
                           ),
                           SizedBox(height: 8),
@@ -150,7 +155,7 @@ class _SplashScreenState extends State<SplashScreen>
                             "Find documents by content, not folders",
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.grey,
+                              color: Colors.black54,
                             ),
                           ),
                         ],
