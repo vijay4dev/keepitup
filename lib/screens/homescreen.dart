@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:keepitup/screens/pdfviewscreen.dart';
+import 'package:keepitup/screens/settings_screen.dart';
 import 'package:keepitup/services/navigation_service.dart';
 import 'package:keepitup/services/pdf_scanne_services.dart';
 import 'package:keepitup/utils/Appcolors.dart';
@@ -55,24 +56,13 @@ class _PdfListScreenState extends State<PdfListScreen> {
         ),
         actions: [
           IconButton(
-            padding: EdgeInsets.all(0),
-            onPressed: () {},
-            icon: const Icon(Icons.add),
-            style: ElevatedButton.styleFrom(
-              elevation: 5,
-              shadowColor: Appcolors.app_blue_color.withOpacity(0.3),
-              iconColor: Colors.white,
-              backgroundColor: Appcolors.app_blue_color,
-            ),
-          ),
-          10.ww,
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(CupertinoIcons.gear),
+            onPressed: () => NavigationService.push(SettingsScreen(onBack: NavigationService.pop)),
+            icon: const Icon(CupertinoIcons.gear_solid , size: 25,),
             style: ElevatedButton.styleFrom(
               iconColor: Colors.black,
               padding: const EdgeInsets.all(5),
               backgroundColor: Color.fromARGB(234, 243, 244, 246),
+              shape: CircleBorder()
             ),
           ),
         ],

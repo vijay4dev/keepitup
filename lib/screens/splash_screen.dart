@@ -4,6 +4,8 @@ import 'package:keepitup/screens/homescreen.dart';
 import 'package:keepitup/services/navigation_service.dart';
 import 'package:keepitup/services/pdf_scanne_services.dart';
 import 'package:keepitup/services/permission_service.dart';
+import 'package:keepitup/services/storage_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,6 +22,8 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _rotationAnimation;
   late Animation<Offset> _slideAnimation;
 
+  late String storageUsage;
+
   @override
   void initState() {
     super.initState();
@@ -33,35 +37,51 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 1200),
     );
 
-    _fadeAnimation =
-        CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
     );
 
-    _rotationAnimation = Tween<double>(begin: -0.15, end: 0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
+
+    _rotationAnimation = Tween<double>(
+      begin: -0.15,
+      end: 0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   Future<void> _startFlow() async {
     // animation + init parallel
-    await Future.wait([
-      _controller.forward(),
-      _initApp(),
-    ]);
+    await Future.wait([_controller.forward(), _initApp()]);
+  }
+
+  String formatBytes(int bytes) {
+    if (bytes < 1024) return "$bytes B";
+    if (bytes < 1024 * 1024) {
+      return "${(bytes / 1024).toStringAsFixed(1)} KB";
+    }
+    if (bytes < 1024 * 1024 * 1024) {
+      return "${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB";
+    }
+    return "${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB";
   }
 
   Future<void> _initApp() async {
     final granted = await PermissionService.requestStorage();
+
+    final bytes = await StorageService.getAppStorageUsage();
+    storageUsage = formatBytes(bytes);
+
+    await SharedPreferences.getInstance()
+    ..setString('storage_usage', storageUsage);
 
     if (!granted) {
       _goHome([], true);
@@ -74,7 +94,9 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _goHome(List<File> files, bool permissionDenied) {
     if (!mounted) return;
-    NavigationService.pushReplacement(PdfListScreen(initialPdfs: files, permissionDenied: permissionDenied));
+    NavigationService.pushReplacement(
+      PdfListScreen(initialPdfs: files, permissionDenied: permissionDenied),
+    );
   }
 
   @override
@@ -118,10 +140,7 @@ class _SplashScreenState extends State<SplashScreen>
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(28),
                           gradient: const LinearGradient(
-                            colors: [
-                              Color(0xff3B82F6),
-                              Color(0xff7C3AED),
-                            ],
+                            colors: [Color(0xff3B82F6), Color(0xff7C3AED)],
                           ),
                         ),
                         child: const Icon(
