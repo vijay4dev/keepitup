@@ -64,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen>
         opacity: _fadeAnimation,
         child: Stack(
           fit: StackFit.expand,
-          children: [
+          children: [ 
             /// Gradient background
             Container(
               decoration: const BoxDecoration(

@@ -119,6 +119,32 @@ class _PdfListScreenState extends State<PdfListScreen> {
           ? const Center(child: Text("No PDFs Found"))
           : Column(
               children: [
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    
+                  ),
+                  child: Column(
+                    children: [
+                      SearchBar(
+                        hintText: "Search Documents.....",
+                        constraints: BoxConstraints(
+                          minHeight: 50
+                        ),
+                        hintStyle: WidgetStatePropertyAll(TextStyle(
+                          color: Colors.black.withOpacity(0.5)
+                        )),
+                        leading: Icon(Icons.search , color: Colors.black.withOpacity(0.5),),
+                        backgroundColor: WidgetStatePropertyAll(const Color.fromARGB(220, 236, 236, 236)),
+                        elevation: WidgetStatePropertyAll(0),
+                        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 10 , vertical: 0)),
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.all(Radius.circular(10)))),
+                        
+                      )
+                    ],
+                  ),
+                ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: pdfs.length,

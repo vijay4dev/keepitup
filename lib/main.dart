@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:keepitup/screens/homescreen.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
+  await WakelockPlus.enable();
   runApp(const MyApp());
 }
 
@@ -21,7 +29,7 @@ class MyApp extends StatelessWidget {
 
         // 🎨 Color scheme (NO PURPLE)
         colorScheme: const ColorScheme.light(
-          primary: Colors.blue,      // buttons, highlights
+          primary: Colors.blue, // buttons, highlights
           secondary: Colors.blue,
           surface: Colors.white,
           background: Colors.white,
@@ -41,10 +49,9 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-
       ),
 
-      home: const PdfListScreen(),
+      home: PdfListScreen()
     );
   }
 }

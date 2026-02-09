@@ -45,5 +45,21 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>KeepItUp needs camera access to scan documents and receipts.</string>
+
+	<!-- Access files using Files app / Document Picker -->
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>KeepItUp needs access to your files to organize and manage your documents.</string>
+
+	<!-- Access Downloads folder (iOS 15+) -->
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>KeepItUp needs access to your downloads to import and manage files.</string>
+
+	<!-- Access iCloud Drive -->
+	<key>NSUbiquitousContainers</key>
+	<dict/>
+
+
 </dict>
 </plist>

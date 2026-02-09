@@ -43,6 +43,7 @@ dependencies:
   
   flutter_svg: ^2.2.3
   pdfx: ^2.9.2
+  wakelock_plus: ^1.4.0
   
   
 
