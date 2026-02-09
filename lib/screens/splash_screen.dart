@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:keepitup/screens/homescreen.dart';
+import 'package:keepitup/services/navigation_service.dart';
 import 'package:keepitup/services/pdf_scanne_services.dart';
 import 'package:keepitup/services/permission_service.dart';
 
@@ -73,15 +74,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _goHome(List<File> files, bool permissionDenied) {
     if (!mounted) return;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => PdfListScreen(
-          initialPdfs: files,
-          permissionDenied: permissionDenied,
-        ),
-      ),
-    );
+    NavigationService.pushReplacement(PdfListScreen(initialPdfs: files, permissionDenied: permissionDenied));
   }
 
   @override

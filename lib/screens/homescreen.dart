@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:keepitup/screens/pdfviewscreen.dart';
+import 'package:keepitup/services/navigation_service.dart';
 import 'package:keepitup/services/pdf_scanne_services.dart';
 import 'package:keepitup/utils/Appcolors.dart';
 import 'package:keepitup/utils/extensions.dart';
@@ -54,13 +55,13 @@ class _PdfListScreenState extends State<PdfListScreen> {
         ),
         actions: [
           IconButton(
+            padding: EdgeInsets.all(0),
             onPressed: () {},
             icon: const Icon(Icons.add),
             style: ElevatedButton.styleFrom(
               elevation: 5,
               shadowColor: Appcolors.app_blue_color.withOpacity(0.3),
               iconColor: Colors.white,
-              padding: const EdgeInsets.all(5),
               backgroundColor: Appcolors.app_blue_color,
             ),
           ),
@@ -151,13 +152,7 @@ class _PdfListScreenState extends State<PdfListScreen> {
                                 tags: const ["Work", "Invoice"],
                                 date: "Jan 28, 2026",
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          PdfDetailScreen(file: file),
-                                    ),
-                                  );
+                                  NavigationService.push(PdfDetailScreen(file: file));
                                 },
                                 onMoreTap: () {},
                               );

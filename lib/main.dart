@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:keepitup/screens/homescreen.dart';
 import 'package:keepitup/screens/splash_screen.dart';
+import 'package:keepitup/services/navigation_service.dart';
 import 'package:keepitup/services/permission_service.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-
+      navigatorKey: NavigationService.navigatorKey,
       home: SplashScreen()
     );
   }
