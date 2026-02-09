@@ -9,6 +9,7 @@ import 'package:keepitup/utils/Appcolors.dart';
 import 'package:keepitup/utils/extensions.dart';
 import 'package:keepitup/widgets/fab_button.dart';
 import 'package:keepitup/widgets/pdf_list_item.dart';
+import 'package:keepitup/widgets/tag_chips.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PdfListScreen extends StatefulWidget {
@@ -78,6 +79,7 @@ class _PdfListScreenState extends State<PdfListScreen> {
     return Scaffold(
       backgroundColor: Appcolors.app_bg_color,
       appBar: AppBar(
+        actionsPadding: EdgeInsets.all(10),
         title: Text(
           "Documents",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 34),
@@ -120,28 +122,45 @@ class _PdfListScreenState extends State<PdfListScreen> {
           : Column(
               children: [
                 Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    
-                  ),
+                  padding: EdgeInsets.only(top: 10 , bottom: 10 , left: 15 , right: 15),
+                  decoration: BoxDecoration(color: Colors.white , border: Border(bottom: BorderSide(width: 0.5 , color: Colors.black.withOpacity(0.1)))),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SearchBar(
                         hintText: "Search Documents.....",
-                        constraints: BoxConstraints(
-                          minHeight: 50
+                        constraints: BoxConstraints(minHeight: 50),
+                        hintStyle: WidgetStatePropertyAll(
+                          TextStyle(color: Colors.black.withOpacity(0.5)),
                         ),
-                        hintStyle: WidgetStatePropertyAll(TextStyle(
-                          color: Colors.black.withOpacity(0.5)
-                        )),
-                        leading: Icon(Icons.search , color: Colors.black.withOpacity(0.5),),
-                        backgroundColor: WidgetStatePropertyAll(const Color.fromARGB(220, 236, 236, 236)),
+                        leading: Icon(
+                          Icons.search,
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                        backgroundColor: WidgetStatePropertyAll(
+                          const Color.fromARGB(255, 241, 241, 241),
+                        ),
                         elevation: WidgetStatePropertyAll(0),
-                        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 10 , vertical: 0)),
-                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.all(Radius.circular(10)))),
-                        
-                      )
+                        padding: WidgetStatePropertyAll(
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                        ),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                      15.hh,
+                      TagChips(
+                        tags: ["All", "Work", "Invoice"],
+                        onChanged: (selectedTag) {
+                          print("Selected: $selectedTag");
+                          // yahan tum filter logic laga sakte ho
+                        },
+                      ),
+                      10.hh,
                     ],
                   ),
                 ),
